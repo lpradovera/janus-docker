@@ -1,0 +1,29 @@
+FROM ubuntu:20.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+### build tools ###
+RUN apt-get update && apt-get install -y build-essential autoconf automake iproute2
+
+### FFMPEG ###
+#RUN apt-get update && apt-get install -y software-properties-common
+#RUN apt-get update && apt-get install -y --force-yes ffmpeg libavutil-dev libavcodec-dev libavformat-dev
+
+### Janus ###
+RUN apt-get update && apt-get install -y libmicrohttpd-dev libjansson-dev libglib2.0-dev libconfig-dev libtool git gengetopt wget libssl-dev openssl cmake
+
+## Libnice
+ADD https://api.github.com/repos/libnice/libnice/git/refs/heads/master libnice-version.json
+RUN apt-get update && apt-get install -y gtk-doc-tools python3 python3-pip python3-setuptools python3-wheel ninja-build && cd /root && git clone https://gitlab.freedesktop.org/libnice/libnice.git && cd libnice && pip3 install meson && meson setup -Dprefix=/usr -Dlibdir=lib -Dexamples=disabled -Dgtk_doc=disabled -Dgupnp=disabled -Dgstreamer=disabled -Dtests=disabled build && ninja -C build && ninja -C build install 
+
+RUN cd /root && git clone https://github.com/warmcat/libwebsockets.git && cd libwebsockets && git checkout v4.1-stable && mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DLWS_WITH_STATIC=OFF -DLWS_WITHOUT_TESTAPPS=ON -DLWS_WITHOUT_TEST_SERVER=ON -DLWS_WITH_HTTP2=OFF -DLWS_WITHOUT_EXTENSIONS=OFF -DCMAKE_C_FLAGS="-fpic" .. && make && make install
+RUN cd /root && wget https://github.com/cisco/libsrtp/archive/v2.3.0.tar.gz -O libsrtp-2.3.0.tar.gz && tar xfv libsrtp-2.3.0.tar.gz
+RUN cd /root/libsrtp-2.3.0 && ./configure --prefix=/usr --enable-openssl && make shared_library && make install
+RUN cd /root && git clone https://github.com/sctplab/usrsctp && cd usrsctp && ./bootstrap && ./configure --prefix=/usr --disable-static --disable-programs --disable-inet --disable-inet6 && make && make install
+ADD https://api.github.com/repos/meetecho/janus-gateway/git/refs/heads/master janus-version.json
+RUN cd /root && git clone https://github.com/meetecho/janus-gateway.git
+RUN cd /root/janus-gateway && ./autogen.sh && ./configure --prefix=/opt/janus --disable-docs --disable-all-plugins --enable-plugin-videoroom --disable-all-transports --enable-rest --enable-websockets --disable-all-handlers && make && make install && make configs
+
+RUN apt-get install -y curl
+
+ENTRYPOINT /opt/janus/bin/janus
