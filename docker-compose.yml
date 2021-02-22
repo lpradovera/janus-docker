@@ -8,6 +8,8 @@ services:
       context: .
       dockerfile: Dockerfile.janus
     network_mode: host
+    volumes:
+      - ./janus:/opt/janus/etc/janus
 
   nginx:
     image: nginx
