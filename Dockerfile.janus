@@ -22,7 +22,10 @@ RUN cd /root/libsrtp-2.3.0 && ./configure --prefix=/usr --enable-openssl && make
 RUN cd /root && git clone https://github.com/sctplab/usrsctp && cd usrsctp && ./bootstrap && ./configure --prefix=/usr --disable-static --disable-programs --disable-inet --disable-inet6 && make && make install
 ADD https://api.github.com/repos/meetecho/janus-gateway/git/refs/heads/master janus-version.json
 RUN cd /root && git clone https://github.com/meetecho/janus-gateway.git
-RUN cd /root/janus-gateway && ./autogen.sh && ./configure --prefix=/opt/janus --disable-docs --disable-all-plugins --enable-plugin-videoroom --disable-all-transports --enable-rest --enable-websockets --disable-all-handlers && make && make install && make configs
+
+
+RUN apt-get install -y libcurl4-openssl-dev
+RUN cd /root/janus-gateway && ./autogen.sh && ./configure --prefix=/opt/janus --disable-docs --disable-all-plugins --enable-plugin-videoroom --disable-all-transports --enable-rest --enable-websockets --disable-all-handlers --enable-sample-event-handler && make && make install && make configs
 
 RUN apt-get install -y curl
 
