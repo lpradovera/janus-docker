@@ -44,7 +44,7 @@
 #}
 
 general: {
-	admin_key = "heavymetal"		# If set, rooms can be created via API only
+	admin_key = "$VIDEO_ADMIN_KEY"		# If set, rooms can be created via API only
 									# if this key is provided in the request
 	#lock_rtp_forward = true		# Whether the admin_key above should be
 									# enforced for RTP forwarding requests too
@@ -54,34 +54,4 @@ general: {
 	# By default, integers are used as a unique ID for both rooms and participants.
 	# In case you want to use strings instead (e.g., a UUID), set string_ids to true.
 	string_ids = true
-}
-
-room-1234: {
-	description = "Demo Room"
-	secret = "adminpwd"
-	publishers = 30
-	bitrate = 128000
-	fir_freq = 10
-	#audiocodec = "opus"
-	#videocodec = "vp8"
-	record = false
-	#rec_dir = "/path/to/recordings-folder"
-	audiolevel_event = true
-        audio_active_packets = 50
-        audio_level_average = 10
-}
-
-# This other demo room here is only there in case you want to play with
-# the VP9 SVC support. Notice that you'll need a Chrome launched with
-# the flag that enables that support, or otherwise you'll be using just
-# plain VP9 (which is good if you want to test how this indeed affect
-# what receivers will get, whether they're encoding SVC or not).
-room-5678: {
-	description = "VP9-SVC Demo Room"
-	secret = "adminpwd"
-	publishers = 30
-	bitrate = 512000
-	fir_freq = 10
-	videocodec = "vp9"
-	video_svc = true
 }

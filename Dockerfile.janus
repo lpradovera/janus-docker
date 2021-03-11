@@ -26,7 +26,7 @@ RUN cd /root && git clone https://github.com/meetecho/janus-gateway.git
 
 RUN apt-get install -y libcurl4-openssl-dev
 RUN apt-get install -y gettext
-RUN cd /root/janus-gateway && ./autogen.sh && ./configure --prefix=/opt/janus --disable-docs --disable-all-plugins --enable-plugin-videoroom --disable-all-transports --enable-rest --enable-websockets --disable-all-handlers --enable-sample-event-handler && make && make install && make configs
+RUN cd /root/janus-gateway && ./autogen.sh && ./configure --prefix=/opt/janus --disable-docs --disable-all-plugins --enable-plugin-videoroom --disable-all-transports --enable-rest --enable-websockets --disable-all-handlers --enable-sample-event-handler && make && make install
 
 RUN apt-get install -y curl
 
