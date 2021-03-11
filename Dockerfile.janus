@@ -23,13 +23,11 @@ RUN cd /root && git clone https://github.com/sctplab/usrsctp && cd usrsctp && ./
 ADD https://api.github.com/repos/meetecho/janus-gateway/git/refs/heads/master janus-version.json
 RUN cd /root && git clone https://github.com/meetecho/janus-gateway.git
 
+RUN apt-get install -y libcurl4-openssl-dev curl gettext
 
-RUN apt-get install -y libcurl4-openssl-dev
-RUN apt-get install -y gettext
 RUN cd /root/janus-gateway && ./autogen.sh && ./configure --prefix=/opt/janus --disable-docs --disable-all-plugins --enable-plugin-videoroom --disable-all-transports --enable-rest --enable-websockets --disable-all-handlers --enable-sample-event-handler && make && make install
 
-RUN apt-get install -y curl
-
 COPY docker-entrypoint.sh /
+COPY replacer.sh /
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
